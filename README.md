@@ -1,3 +1,7 @@
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/rovergulf/mta)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/rovergulf/mta)
+[![Golang 1.16](https://github.com/rovergulf/mta/actions/workflows/main.yml/badge.svg)](https://github.com/rovergulf/mta/actions/workflows/main.yml)
+
 # rovergulf/mta
 
 ### Golang Mail Transfer Agent
@@ -26,7 +30,7 @@ https://godoc.org/github.com/rovergulf/mta
 
 ```shell
 # may require GOPRIVATE environment to be set
-go get github.com/rovergulf/emailia
+go get github.com/rovergulf/mta
 ```
 
 ## Examples
