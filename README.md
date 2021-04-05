@@ -22,20 +22,15 @@ sending emails using a local Postfix, an API, etc.
 - SSL and TLS
 - Sending multiple emails with the same SMTP connection
 
-## Documentation
+## Documentation and examples
 
-https://godoc.org/github.com/rovergulf/mta
+See the [examples in the documentation](https://pkg.go.dev/github.com/rovergulf/mta).
 
 ## Download
 
 ```shell
-# may require GOPRIVATE environment to be set
 go get github.com/rovergulf/mta
 ```
-
-## Examples
-
-See the [examples in the documentation](https://rovergulf.net/docs/golang/mta).
 
 ## FAQ
 
