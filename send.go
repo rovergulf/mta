@@ -17,7 +17,7 @@ type Sender interface {
 // SendCloser is the interface that groups the Send and Close methods.
 type SendCloser interface {
 	Sender
-	RcptTo(rcpt ...string) error
+	RcptTo(from string, to []string) error
 	Close() error
 }
 

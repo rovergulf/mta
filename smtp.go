@@ -47,14 +47,6 @@ func NewDialer(host string, port int, username, password string) *Dialer {
 	}
 }
 
-// NewPlainDialer returns a new SMTP Dialer. The given parameters are used to
-// connect to the SMTP server.
-//
-// Deprecated: Use NewDialer instead.
-func NewPlainDialer(host string, port int, username, password string) *Dialer {
-	return NewDialer(host, port, username, password)
-}
-
 // Dial dials and authenticates to an SMTP server. The returned SendCloser
 // should be closed when done using it.
 func (d *Dialer) Dial() (SendCloser, error) {
@@ -137,14 +129,16 @@ func (d *Dialer) DialAndSend(m ...*Message) error {
 	return Send(s, m...)
 }
 
-func (d *Dialer) RcptTo(rcpt ...string) error {
+// RcptTo opens a connection to the SMTP server, checks if recipients are reachable and
+// closes the connection
+func (d *Dialer) RcptTo(from string, to []string) error {
 	s, err := d.Dial()
 	if err != nil {
 		return err
 	}
 	defer s.Close()
 
-	return s.RcptTo(rcpt...)
+	return s.RcptTo(from, to)
 }
 
 type smtpSender struct {
@@ -152,14 +146,28 @@ type smtpSender struct {
 	d *Dialer
 }
 
-func (c *smtpSender) RcptTo(rcpt ...string) error {
-	for _, addr := range rcpt {
+func (c *smtpSender) RcptTo(from string, to []string) error {
+	if err := c.Mail(from); err != nil {
+		if err == io.EOF {
+			// This is probably due to a timeout, so reconnect and try again.
+			sc, derr := c.d.Dial()
+			if derr == nil {
+				if s, ok := sc.(*smtpSender); ok {
+					*c = *s
+					return c.RcptTo(from, to)
+				}
+			}
+		}
+		return err
+	}
+
+	for _, addr := range to {
 		if err := c.Rcpt(addr); err != nil {
 			return err
 		}
 	}
 
-	return nil
+	return c.Close()
 }
 
 func (c *smtpSender) Send(from string, to []string, msg io.WriterTo) error {
