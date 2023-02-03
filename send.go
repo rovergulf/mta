@@ -14,10 +14,17 @@ type Sender interface {
 	Send(from string, to []string, msg io.WriterTo) error
 }
 
+// RcptChecker is the interface that wraps the RcptTo method.
+//
+// RcptTo checks if email is reachable.
+type RcptChecker interface {
+	RcptTo(from string, to []string) error
+}
+
 // SendCloser is the interface that groups the Send and Close methods.
 type SendCloser interface {
 	Sender
-	RcptTo(from string, to []string) error
+	RcptChecker
 	Close() error
 }
 
